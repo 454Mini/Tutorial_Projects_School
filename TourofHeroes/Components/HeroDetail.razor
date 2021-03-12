@@ -1,0 +1,32 @@
+﻿@page "/herodetail/{Name}"
+@*Deeplink med name som parameter*@
+@inject IHeroService client;
+@inject IJSRuntime JSRuntime;
+
+@if (SelectedHero != null)
+{
+    <h2>@SelectedHero.Name.ToUpper() Details</h2>
+    <div><span> Id: </span>@SelectedHero.Id</div>
+    <div><span>name:</span>@SelectedHero.Name</div>
+    <div>
+        <label>Name:</label>
+        <input @bind="SelectedHero.Name" placeholder="name" />
+    </div>
+
+}
+
+
+@code{
+    //[Parameter]
+    public Hero SelectedHero { get; set; }
+
+    [Parameter]
+    public string Name {get; set;}
+
+    private Hero[] heroes;
+    protected override async Task OnInitializedAsync()
+    {
+        heroes = await client.GetHeroes();
+        SelectedHero = heroes.First(x => x.Name == Name);      
+    }
+}

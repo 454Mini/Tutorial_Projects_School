@@ -1,0 +1,43 @@
+﻿@inject IMessagingService _messagingService;
+
+<h2>Messages</h2>
+<button class="clear" @onclick="ClearMessages">clear</button>
+
+@foreach (var message in _messages)
+{
+    <div>@message</div>
+}
+
+
+@code {
+    private List<string> _messages;
+
+    protected override void OnInitialized()
+    {
+        //On initialzed sættes beskederne based på Imessaginservice
+    //Sætte til heroes fetched
+
+        _messages = _messagingService.Get(); 
+        _messagingService.OnMessageChanged += MessageChanged; 
+    //Get update fra messaging service. SKal ikke være her. Den skal stadig hente beskeder fra screen
+    }
+
+
+    private async void MessageChanged(object sender, List<string> newMessages)
+    {
+        await InvokeAsync(() =>
+        {
+        //Set local counter variabel
+        _messages = newMessages;
+        //Tell blazor to rewrite DOM
+        StateHasChanged();
+        });
+    }
+
+    async private void ClearMessages()
+    {
+        await _messagingService.Clear();
+    }
+
+
+}
