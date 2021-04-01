@@ -1,0 +1,52 @@
+﻿@page "/build" 
+@using BlazorBattles.Shared
+@*page directive*@
+@inject BlazorBattles.Client.Services.IBananaService BananaService
+@inject BlazorBattles.Client.Services.IUnitService UnitService
+@inject IToastService ToastService
+
+<h3>Build</h3>
+<div class="form-group">
+    <select @bind="selectedUnitId" class="form-control">
+        @foreach (var unit in UnitService.Units)
+        {
+            <option value="@unit.Id">@unit.Title // @unit.BananaCost Bananas</option>
+        }
+    </select>
+</div>
+
+
+<button @onclick="BuildUnit" class="btn btn-primary">Build</button>
+@*med Lambda gives metoden nu et antal *@
+
+@if (needMoreBananas)
+{
+    <div class="validation-message">
+        Not enough Bananas!
+    </div>
+}
+
+
+@code {
+    int selectedUnitId = 1;
+
+    bool needMoreBananas = false;
+
+    public void BuildUnit()
+    {
+        BlazorBattles.Shared.Unit selectedUnit =
+            UnitService.Units.FirstOrDefault(unit => unit.Id == selectedUnitId);
+
+        if (BananaService.Bananas < selectedUnit.BananaCost)
+        {
+            needMoreBananas = true;
+            ToastService.ShowError("Not enough bananas", "Sur smiley");
+            return;
+        }
+
+        needMoreBananas = false;
+
+        BananaService.EatBananas(selectedUnit.BananaCost);
+        UnitService.AddUnit(selectedUnitId);
+    }
+}
