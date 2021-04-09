@@ -1,4 +1,9 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavgationManager
+
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Blazor Battles</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -33,5 +38,12 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async void Logout()
+    {
+        await LocalStorage.RemoveItemAsync("isAuthenticated");
+        await AuthStateProvider.GetAuthenticationStateAsync(); //Update user state
+        NavgationManager.NavigateTo("/");
     }
 }
