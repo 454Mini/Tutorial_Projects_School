@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using BlazorBattles.Client.Services;
+using Blazored.LocalStorage;
 using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -21,6 +22,7 @@ namespace BlazorBattles.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddBlazoredToast();
+            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<IBananaService, BananaService>();
             builder.Services.AddScoped<IUnitService, UnitService>();
